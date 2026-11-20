@@ -1,0 +1,126 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101b17"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="麻雀収支"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><title>麻雀収支</title>
+<style>
+:root{color-scheme:dark;--bg:#101a16;--panel:#192822;--panel2:#21372d;--line:#3a5145;--txt:#f3f4ee;--muted:#a9b8ad;--gold:#d7b978;--green:#a9d5a9;--red:#ef9b91}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;padding-bottom:env(safe-area-inset-bottom)}header{padding:18px 15px 10px;max-width:1000px;margin:auto}h1{margin:3px 0;font-size:23px}.sub{font-size:11px;color:var(--muted)}main{max-width:1000px;margin:auto;padding:0 10px 35px}.tabs{display:flex;gap:5px;position:sticky;top:0;background:#101a16ee;padding:7px 0;z-index:4}.tab,button,select,input{font:inherit}.tab{flex:1;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:10px 3px;border-radius:9px;font-size:12px}.tab.active{background:var(--green);color:#122019;font-weight:800}.panel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px;margin:9px 0}.heading{font-weight:800;font-size:14px;margin:0 0 10px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.field{flex:1;min-width:100px}.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}.field input,.field select,input,select{background:#0f1a15;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px;min-width:0;width:100%}button{cursor:pointer}.btn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:9px 11px;font-size:12px}.primary{background:var(--green);color:#132019;border:0;font-weight:900;border-radius:9px;padding:12px;width:100%;margin-top:10px}.danger{color:var(--red)}.muted{color:var(--muted);font-size:11px}.players{display:flex;gap:6px;flex-wrap:wrap}.player{padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:#0f1a15;color:var(--txt);font-size:12px}.player.sel{background:#335342;border-color:var(--green)}.rankline{display:grid;grid-template-columns:40px minmax(0,1fr) 95px 66px;gap:6px;align-items:center;margin:7px 0}.rankline input{padding:9px 7px}.rankline .r{color:var(--gold);font-weight:800;font-size:12px}.rankline .pt{font-size:11px;color:var(--green);text-align:right}.draft-input{width:100%!important;padding:7px 5px!important;text-align:center}.auto-btn{display:block;margin:4px auto 0;padding:5px 7px;font-size:10px}.draft-empty{color:var(--muted)}.small{font-size:10px;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.stat{background:#0f1a15;padding:10px;border:1px solid var(--line);border-radius:9px}.stat b{display:block;font-size:18px}.stat span{font-size:10px;color:var(--muted)}.scroll{overflow-x:auto}.sheet{border-collapse:collapse;width:100%;min-width:560px;font-size:11px}.sheet th,.sheet td{border:1px solid var(--line);padding:7px 5px;text-align:center;white-space:nowrap}.sheet th{background:#24382f;color:var(--gold)}.sheet td:first-child,.sheet th:first-child{text-align:left}.pos{color:var(--green)}.neg{color:var(--red)}.hide{display:none!important}.entrygrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.checkline{display:flex;align-items:center;gap:7px;font-size:12px;margin:7px 0}.checkline input{width:auto}.record{border-top:1px solid var(--line);padding:10px 0}.record:first-child{border:0}.right{margin-left:auto}.chip{font-size:10px;color:var(--gold)}@media(min-width:650px){.stats{grid-template-columns:repeat(4,1fr)}.entrygrid{grid-template-columns:repeat(3,1fr)}}
+.entry-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}.entry-table th,.entry-table td{padding:8px 5px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}.entry-table th:first-child{width:27%}.entry-table th:nth-child(2){width:37%}.entry-table th:nth-child(3){width:36%}.entry-table input{padding:9px 5px;text-align:center;font-size:14px}.entry-table .auto-btn{margin:4px 0 0;width:100%}.chip-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.chip-cell{padding:8px;background:#0f1a15;border-radius:8px}.chip-cell label{display:block;font-size:11px;margin-bottom:5px}.chip-cell input{width:100%}</style></head><body><header><div class="chip">MAHJONG LEDGER</div><h1>麻雀収支管理</h1><div class="sub">四麻・三麻／最大6人／順位・ウマ・チップ・祝儀を一括管理</div></header><main>
+<nav class="tabs"><button class="tab active" data-page="game">対局入力</button><button class="tab" data-page="table">成績表</button><button class="tab" data-page="settings">ルール設定</button><button class="tab" data-page="logs">履歴</button></nav>
+<section id="game">
+<div class="panel"><div class="heading">今日のメンバー</div><div class="row"><div class="field"><label>メンバー名を追加</label><input id="newName" placeholder="名前を入力"></div><button class="btn" id="addName">追加</button></div><div class="players" id="memberList" style="margin-top:9px"></div><div class="muted">最大6人まで登録可能。今日の参加者を選択すると、その日の対局中は固定されます。</div></div>
+<div class="panel"><div class="row"><div class="field"><label>対局形式</label><select id="kind"><option value="yonma">四人麻雀</option><option value="sanma">三人麻雀</option></select></div><div class="field"><label>レート</label><select id="rate"></select></div><div class="field"><label>ウマ・オカ</label><span id="ruleSummary" class="muted"></span></div></div></div>
+<div class="panel"><div class="heading">成績表に直接入力（100点単位）</div><div class="muted" id="participantHint">参加者の欄に持ち点を入力してください。</div><div class="scroll" style="margin-top:9px"><table class="sheet" id="draftTable"></table></div><div class="muted" id="scoreHint" style="margin-top:8px">例：28,700点なら287。合計点から最後の1人を自動計算します。</div><div id="calc" class="stats" style="margin-top:10px"></div></div>
+
+<div class="panel"><button class="primary" id="saveGame">この半荘を保存</button><div id="error" class="danger muted"></div></div>
+</section>
+<section id="table" class="hide"><div class="panel"><div class="heading">今日の成績表</div><div class="stats" id="summary"></div><div class="scroll" style="margin-top:12px"><table class="sheet" id="scoreTable"></table></div></div></section>
+<section id="settings" class="hide"><div class="panel"><div class="heading">四麻デフォルト設定</div><div class="entrygrid" id="settingsYonma"></div><label class="checkline"><input type="checkbox" id="lockYonma"> 四麻のデフォルトを固定する</label><button class="btn" id="saveYonma">四麻設定を保存</button></div><div class="panel"><div class="heading">三麻デフォルト設定</div><div class="entrygrid" id="settingsSanma"></div><label class="checkline"><input type="checkbox" id="lockSanma"> 三麻のデフォルトを固定する</label><button class="btn" id="saveSanma">三麻設定を保存</button></div><div class="panel"><div class="heading">特殊精算の設定</div><div class="entrygrid" id="specialSettings"></div><div class="muted">焼き鳥・飛び・役満祝儀はON/OFFと金額を設定できます。発生時に対局ごとに対象者を選択します。</div></div><div class="panel"><div class="heading">データ管理</div><button class="btn" id="export">バックアップを書き出す</button> <button class="btn" id="import">バックアップを読み込む</button><input type="file" id="file" accept="application/json" class="hide"><p class="muted">データはこの端末のブラウザ内に保存されます。定期的にバックアップしてください。</p></div></section>
+<section id="logs" class="hide"><div class="panel"><div class="heading">対局履歴</div><div id="logList"></div></div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id), KEY='mahjong-ledger-v2';
+const defaults={yonma:{start:250,ret:300,uma1:10,uma2:5,oka:20,rate:50,chip:100},sanma:{start:300,ret:350,uma1:10,uma2:0,oka:15,rate:50,chip:100}};
+let db={members:[],games:[],rules:JSON.parse(JSON.stringify(defaults)),locks:{yonma:false,sanma:false},special:{yakitori:1000,tobi:1000,yakuman:1000,chip:100}};
+try{db={...db,...JSON.parse(localStorage.getItem(KEY)||'{}')};}catch(e){}
+let activePage='game',draftScores={},draftExtras={},draftChips={},draftFlags={yakitori:false,tobi:false,yakuman:false},autoIndex=null;
+db.todayMembers=Array.isArray(db.todayMembers)?db.todayMembers.filter(n=>db.members.includes(n)):[];
+function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
+function rule(){return db.rules[$('kind').value]}
+function fmt(n){return (n>0?'+':'')+Math.round(n*10)/10}
+function html(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addMember(){let n=$('newName').value.trim();if(!n||db.members.length>=6||db.members.includes(n))return;$('newName').value='';db.members.push(n);persist();renderMembers()}
+$('addName').onclick=addMember;
+function renderMembers(){
+ $('memberList').innerHTML=db.members.map((n,i)=>`<div class="row" style="gap:4px"><button class="player ${db.todayMembers.includes(n)?'sel':''}" data-pick="${i}">${db.todayMembers.includes(n)?'✓ ':''}${html(n)}</button><button class="btn danger" data-remove="${i}" title="登録削除">×</button></div>`).join('')||'<span class="muted">先にメンバーを登録してください</span>';
+ $('memberList').querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
+  let n=db.members[Number(b.dataset.pick)],old=db.todayMembers.slice();
+  db.todayMembers=old.includes(n)?old.filter(x=>x!==n):old.concat(n);
+  draftScores={};draftExtras={};draftChips={};draftFlags={yakitori:false,tobi:false,yakuman:false};autoIndex=null;persist();renderMembers();
+ });
+ $('memberList').querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{
+  let i=Number(b.dataset.remove),n=db.members[i];
+  if(confirm(n+'を登録メンバーから削除しますか？（過去の成績は残ります）')){
+   db.members.splice(i,1);db.todayMembers=db.todayMembers.filter(x=>x!==n);
+   draftScores={};draftExtras={};draftChips={};draftFlags={yakitori:false,tobi:false,yakuman:false};autoIndex=null;persist();renderMembers();
+  }
+ });
+ renderDraft();
+}
+function count(){return $('kind').value==='yonma'?4:3}
+function rosterIndices(){return db.todayMembers.map(n=>db.members.indexOf(n)).filter(i=>i>=0)}
+function enteredIndices(){return rosterIndices().filter(i=>draftScores[i]!==undefined&&draftScores[i]!==''&&Number.isFinite(Number(draftScores[i])))}
+
+function participantsNow(){return enteredIndices().filter(i=>i!==autoIndex).concat(autoIndex===null?[]:[autoIndex])}
+function renderDraft(){
+ let c=count(),roster=rosterIndices(),entered=enteredIndices(),manual=entered.filter(i=>i!==autoIndex);
+ let remaining=roster.filter(i=>!entered.includes(i)),ready=manual.length===c-1;
+ let total=manual.reduce((a,i)=>a+Number(draftScores[i]||0),0),computed=rule().start*c-total;
+ // When the roster has exactly the required number, fill the final score automatically.
+ if(ready&&roster.length===c&&autoIndex===null&&remaining.length===1&&computed>=0){
+  autoIndex=remaining[0];draftScores[autoIndex]=String(computed);
+  entered=enteredIndices();remaining=[];ready=true;
+ }
+ $('draftTable').className='entry-table';
+ $('draftTable').innerHTML=`<thead><tr><th>メンバー</th><th>持ち点<br><span class="small">100点単位</span></th><th>祝儀・精算<br><span class="small">円</span></th></tr></thead><tbody>`+
+ roster.map(i=>{
+  let isAuto=i===autoIndex,action=ready&&remaining.includes(i)&&computed>=0?`<button class="btn auto-btn" data-auto="${i}">自動入力</button>`:'';
+  return `<tr><th>${html(db.members[i])}</th><td><input type="number" inputmode="numeric" step="1" min="0" data-score="${i}" value="${html(draftScores[i]??'')}" placeholder="例 287" ${isAuto?'disabled':''}>${isAuto?'<span class="small">自動計算</span>':action}</td><td><input type="number" inputmode="numeric" step="1" data-extra="${i}" value="${html(draftExtras[i]??0)}" placeholder="0"></td></tr>`;
+ }).join('')+`</tbody>`;
+ let chipHtml=`<div class="heading" style="margin-top:14px">チップ枚数（＋／－）</div><div class="chip-grid">`+roster.map(i=>`<div class="chip-cell"><label>${html(db.members[i])}</label><input type="number" step="1" inputmode="numeric" data-chip="${i}" value="${html(draftChips[i]??0)}"></div>`).join('')+'</div><div class="row" style="margin-top:10px">'+['yakitori','tobi','yakuman'].map(k=>`<label class="checkline"><input type="checkbox" data-flag="${k}" ${draftFlags[k]?'checked':''}>${({yakitori:'焼き鳥',tobi:'飛び',yakuman:'役満祝儀'})[k]}</label>`).join('')+'</div>';
+ let chipBox=$('chipInputs');if(!chipBox){chipBox=document.createElement('div');chipBox.id='chipInputs';$('draftTable').parentNode.after(chipBox)}chipBox.innerHTML=chipHtml;
+ $('draftTable').querySelectorAll('[data-score]').forEach(el=>el.addEventListener('change',e=>{
+  let i=Number(e.target.dataset.score),v=e.target.value;
+  if(v==='')delete draftScores[i];else draftScores[i]=v;
+  if(autoIndex!==null&&i!==autoIndex){delete draftScores[autoIndex];autoIndex=null}
+  renderDraft();
+ }));
+ $('draftTable').querySelectorAll('[data-auto]').forEach(b=>b.onclick=()=>{
+  if(enteredIndices().filter(i=>i!==autoIndex).length!==c-1)return;
+  let i=Number(b.dataset.auto);autoIndex=i;draftScores[i]=String(computed);renderDraft();
+ });
+ $('draftTable').querySelectorAll('[data-extra]').forEach(el=>el.oninput=e=>{draftExtras[Number(e.target.dataset.extra)]=e.target.value});
+ chipBox.querySelectorAll('[data-chip]').forEach(el=>el.oninput=e=>{draftChips[Number(e.target.dataset.chip)]=e.target.value});
+ chipBox.querySelectorAll('[data-flag]').forEach(el=>el.onchange=e=>{draftFlags[e.target.dataset.flag]=e.target.checked});
+ $('participantHint').textContent=roster.length<c?`今日の参加者を${c}人以上選択してください（現在${roster.length}人）。`:`今日の参加者 ${roster.length}人／今回の入力 ${enteredIndices().length}/${c}人。${ready&&remaining.length>1?'「自動入力」で最後の参加者を指定してください。':''}`;
+ $('scoreHint').textContent=`持ち点合計 ${enteredIndices().reduce((a,i)=>a+Number(draftScores[i]||0),0)} / ${rule().start*c}（100点単位）`;
+ calc();
+}
+function calc(){
+ let c=count(),r=rule(),roster=rosterIndices(),idx=enteredIndices(),manual=idx.filter(i=>i!==autoIndex);
+ let valid=roster.length>=c&&manual.length===c-1&&manual.every(i=>Number.isInteger(Number(draftScores[i]))&&Number(draftScores[i])>=0);
+ let missing=r.start*c-manual.reduce((a,i)=>a+Number(draftScores[i]),0);
+ let complete=valid&&autoIndex!==null&&idx.length===c&&missing>=0&&Number(draftScores[autoIndex])===missing;
+ let ranked=complete?idx.map(i=>({i,score:Number(draftScores[i])})).sort((a,b)=>b.score-a.score):[];
+ let umas=c===4?[r.uma1+r.uma2,r.uma2,-r.uma2,-r.uma1-r.uma2]:[r.uma1,0,-r.uma1];
+ let pts=ranked.map((x,i)=>(x.score-r.ret)/10+umas[i]+(i===0?(r.oka??0):0));
+ $('calc').innerHTML=complete?ranked.map((x,i)=>`<div class="stat"><b>${fmt(pts[i])}pt</b><span>${i+1}着 ${html(db.members[x.i])} / ${x.score*100}点</span></div>`).join(''):'<div class="muted">参加者の持ち点を入力してください。最後の1人は自動計算できます。</div>';
+ return {ok:complete,scores:ranked.map(x=>x.score),pts,indices:ranked.map(x=>x.i)};
+}
+function namesafe(i){return db.members[i]||''}
+function renderExtras(){}
+function renderRules(){for(let type of ['yonma','sanma']){let r=db.rules[type],id=type==='yonma'?'settingsYonma':'settingsSanma';let fields=[['start','配給原点（100点単位）'],['ret','返し点（100点単位）'],['uma1',type==='yonma'?'ウマ大きい方':'ウマ'],...(type==='yonma'?[['uma2','ウマ小さい方']]:[]),['oka','オカpt'],['rate','レート（円/pt）'],['chip','チップ単価（円/枚）']];$(id).innerHTML=fields.map(([k,l])=>`<div class="field"><label>${l}</label><input type="number" data-rule="${type}.${k}" value="${r[k]}"></div>`).join('');$('lock'+(type==='yonma'?'Yonma':'Sanma')).checked=db.locks[type];}
+$('specialSettings').innerHTML=[['yakitori','焼き鳥ペナルティ（円）'],['tobi','飛びペナルティ（円）'],['yakuman','役満祝儀（円）'],['chip','チップ単価（円/枚）']].map(([k,l])=>`<div class="field"><label>${l}</label><input type="number" data-special="${k}" value="${db.special[k]}"></div>`).join('')}
+function saveRule(type){document.querySelectorAll(`[data-rule^="${type}."]`).forEach(el=>{let [t,k]=el.dataset.rule.split('.');db.rules[t][k]=Number(el.value)});db.locks[type]=$('lock'+(type==='yonma'?'Yonma':'Sanma')).checked;persist();syncRule();alert('設定を保存しました')}
+$('saveYonma').onclick=()=>saveRule('yonma');$('saveSanma').onclick=()=>saveRule('sanma');
+$('specialSettings').addEventListener('change',e=>{if(e.target.dataset.special){db.special[e.target.dataset.special]=Number(e.target.value);persist()}});
+function syncRule(){let r=rule();$('rate').innerHTML=[10,20,30,50,100,200].map(x=>`<option value="${x}">${x}円</option>`).join('');$('rate').value=r.rate;$('rate').disabled=db.locks[$('kind').value];$('ruleSummary').textContent=$('kind').value==='yonma'?`ウマ ${r.uma1}-${r.uma2} / オカ ${r.oka}pt`:`ウマ +${r.uma1}/0/-${r.uma1} / オカ ${r.oka}pt`;renderDraft()}
+$('kind').onchange=()=>{draftScores={};draftExtras={};draftChips={};draftFlags={yakitori:false,tobi:false,yakuman:false};autoIndex=null;syncRule()};$('rate').onchange=()=>{rule().rate=Number($('rate').value);persist()};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['game','table','settings','logs'].forEach(id=>$(id).classList.toggle('hide',id!==b.dataset.page));activePage=b.dataset.page;if(activePage==='table')renderTable();if(activePage==='settings')renderRules();if(activePage==='logs')renderLogs()});
+$('saveGame').onclick=()=>{
+ let x=calc();if(!x.ok){$('error').textContent='参加人数・持ち点・合計点を確認してください。';return}
+ let names=x.indices.map(i=>db.members[i]);
+ let chips=x.indices.map(i=>Number(draftChips[i]||0)),extras=x.indices.map(i=>Number(draftExtras[i]||0));
+ if([...chips,...extras].some(v=>!Number.isFinite(v))){$('error').textContent='チップ・祝儀の入力を確認してください。';return}
+ let r=rule();
+ let rec={id:Date.now(),date:new Date().toISOString(),kind:$('kind').value,names,scores:x.scores,pts:x.pts,rate:Number($('rate').value),chipUnit:db.special.chip,chips,extras,flags:{...draftFlags},settings:{...r},special:{...db.special}};
+ db.games.push(rec);persist();$('error').textContent='保存しました。';draftScores={};draftExtras={};draftChips={};draftFlags={yakitori:false,tobi:false,yakuman:false};autoIndex=null;renderDraft();
+};
+function money(rec,i){let c=rec.chips[i]*rec.chipUnit+rec.extras[i];if(rec.flags?.yakitori)c-=rec.special.yakitori/(rec.names.length-1);if(rec.flags?.tobi&&rec.scores[i]===0)c-=rec.special.tobi;if(rec.flags?.yakuman)c+=rec.special.yakuman;return rec.pts[i]*rec.rate+c}
+function totals(){let m={};db.games.forEach(g=>g.names.forEach((n,i)=>{if(!m[n])m[n]={pt:0,money:0,games:0,chip:0};m[n].pt+=g.pts[i];m[n].money+=money(g,i);m[n].games++;m[n].chip+=g.chips[i]}));return m}
+function renderTable(){let t=totals(),members=db.members;let keys=members.length?members:Object.keys(t);$('summary').innerHTML=`<div class="stat"><b>${db.games.length}</b><span>半荘数</span></div><div class="stat"><b>${keys.length}</b><span>メンバー</span></div><div class="stat"><b>${fmt(Object.values(t).reduce((a,x)=>a+x.pt,0))}</b><span>全員合計pt</span></div><div class="stat"><b>${Math.round(Object.values(t).reduce((a,x)=>a+x.money,0)).toLocaleString()}円</b><span>全員収支合計</span></div>`;$('scoreTable').innerHTML='<tr><th>半荘</th>'+keys.map(n=>`<th>${html(n)}</th>`).join('')+'</tr>'+db.games.map((g,j)=>'<tr><td>'+(j+1)+'</td>'+keys.map(n=>{let i=g.names.indexOf(n);return `<td>${i<0?'—':`<span class="${g.pts[i]>=0?'pos':'neg'}">${fmt(g.pts[i])}pt</span><br>${g.scores[i]*100}点<br><span class="small">チップ${g.chips[i]}</span>`}</td>`}).join('')+'</tr>').join('')+'<tr><th>合計</th>'+keys.map(n=>`<th>${t[n]?fmt(t[n].pt)+'pt<br>'+Math.round(t[n].money).toLocaleString()+'円':'—'}</th>`).join('')+'</tr>'}
+function renderLogs(){
+ $('logList').innerHTML=db.games.slice().reverse().map(g=>`<div class="record"><div class="row"><b>${new Date(g.date).toLocaleString('ja-JP')}・${g.kind==='yonma'?'四麻':'三麻'}</b><button class="btn right danger" data-del="${g.id}">削除</button></div><div class="muted">${g.names.map((n,i)=>`${i+1}着 ${html(n)} ${fmt(g.pts[i])}pt`).join(' ／ ')}</div><div class="muted">レート${g.rate}円</div></div>`).join('')||'<div class="muted">履歴はまだありません。</div>';
+ $('logList').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('この対局を削除しますか？')){db.games=db.games.filter(g=>g.id!=b.dataset.del);persist();renderLogs()}});
+}
+$('export').onclick=()=>{let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=u;a.download='mahjong-backup.json';a.click();URL.revokeObjectURL(u)};
+$('import').onclick=()=>$('file').click();$('file').onchange=async e=>{try{let d=JSON.parse(await e.target.files[0].text());if(confirm('現在のデータを置き換えますか？')){db={...db,...d};db.todayMembers=Array.isArray(db.todayMembers)?db.todayMembers.filter(n=>db.members.includes(n)):[];persist();location.reload()}}catch(x){alert('読み込みに失敗しました')}};
+renderMembers();syncRule();renderRules();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script></main></body></html>
